@@ -20,12 +20,12 @@ class Pagination extends Model
     public function paginate($baseQuery, $table, $page, $rows, $sidx, $sord)
     {
         $SEARCH_OPERATIONS = [
-            'eq'=>'=',
-            'ne'=>'<>',
-            'lt'=>'<',
-            'le'=>'<=',
-            'gt'=>'>',
-            'ge'=>'>='
+            'eq' => '=',
+            'ne' => '<>',
+            'lt' => '<',
+            'le' => '<=',
+            'gt' => '>',
+            'ge' => '>='
         ];
 
         // Отримання параметрів пагінації
@@ -43,39 +43,66 @@ class Pagination extends Model
         $searchString = Request::get("searchString");
         $searchOperation = Request::get("searchOper");
 
-        if (Request::get('_search')){
-            if (array_key_exists($searchOperation, $SEARCH_OPERATIONS)){
-                $q .= " WHERE {$searchField} {$SEARCH_OPERATIONS[$searchOperation]} '{$searchString}' ";
-            }else
-            switch ($searchOperation){
-                case 'bw':
-                    $q .= " WHERE {$searchField} like '{$searchString}%' ";
-                    break;
-                case 'nw':
-                    $q .= " WHERE {$searchField} not like '{$searchString}%' ";
-                    break;
-                case 'ew':
-                    $q .= " WHERE {$searchField} like '%{$searchString}'} ";
-                    break;
-                case 'en':
-                    $q .= " WHERE {$searchField} not like '%{$searchString}'} ";
-                    break;
-                case 'nc':
-                    $q .= " WHERE {$searchField} not like '%{$searchString}%'} ";
-                    break;
-                default:
-                    $q .= " WHERE {$searchField} like '%{$searchString}%'} ";
-                    break;
-            }
+        if (Request::get('_search')) {
+            if (array_key_exists($searchOperation, $SEARCH_OPERATIONS)) {
+                //$q .= " WHERE {$searchField} {$SEARCH_OPERATIONS[$searchOperation]} '{$searchString}' ";
+                $q .= " WHERE t.{$searchField} {$SEARCH_OPERATIONS[$searchOperation]} '{$searchString}' ";
+            } else
+                switch ($searchOperation) {
+                    case 'bw':
+                        $q .= " WHERE t.{$searchField} LIKE '{$searchString}%' ";
+                        break;
+                    case 'nw':
+                        $q .= " WHERE t.{$searchField} NOT LIKE '{$searchString}%' ";
+                        break;
+                    case 'ew':
+                        $q .= " WHERE t.{$searchField} LIKE '%{$searchString}' ";
+                        break;
+                    case 'en':
+                        $q .= " WHERE t.{$searchField} NOT LIKE '%{$searchString}' ";
+                        break;
+                    case 'nc':
+                        $q .= " WHERE t.{$searchField} NOT LIKE '%{$searchString}%' ";
+                        break;
+                    default:
+                        $q .= " WHERE t.{$searchField} LIKE '%{$searchString}%' ";
+                        break;
+                }
+
+            // switch ($searchOperation) {
+            //     case 'bw':
+            //         $q .= " WHERE {$searchField} like '{$searchString}%' ";
+            //         break;
+            //     case 'nw':
+            //         $q .= " WHERE {$searchField} not like '{$searchString}%' ";
+            //         break;
+            //     case 'ew':
+            //         $q .= " WHERE {$searchField} like '%{$searchString}'} ";
+            //         break;
+            //     case 'en':
+            //         $q .= " WHERE {$searchField} not like '%{$searchString}'} ";
+            //         break;
+            //     case 'nc':
+            //         $q .= " WHERE {$searchField} not like '%{$searchString}%'} ";
+            //         break;
+            //     default:
+            //         $q .= " WHERE {$searchField} like '%{$searchString}%'} ";
+            //         break;
+            // }
 
 
         }
 
-        if(!empty($sidx)){
-            $q .= " order by `{$sidx}` {$sord}";
+        // if (!empty($sidx)) {
+        //     $q .= " order by `{$sidx}` {$sord}";
+        // }
+        if (!empty($sidx)) {
+            $q .= " ORDER BY t.`{$sidx}` {$sord}";
         }
+
         $totalRecords = 0;
         $stmt = $this->db->prepare($q);
+        //$this->dd($q);
         if ($stmt->execute()) {
             $totalRecords = count($stmt->fetchAll(PDO::FETCH_ASSOC));
         } else {
@@ -104,7 +131,7 @@ class Pagination extends Model
         // Створення JSON-відповіді
         return array(
             "page" => $page,
-            "total" => ceil($totalRecords/$rows),
+            "total" => ceil($totalRecords / $rows),
             "records" => $totalRecords,
             "data" => $data
         );
