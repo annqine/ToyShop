@@ -1,4 +1,101 @@
-
 .card:hover {
-    box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.3);
+  box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.3);
+}
+
+.card-img-top {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  object-position: center;
+}
+
+.card-title {
+  font-size: 1rem;
+  font-weight: 500;
+  line-height: 1.2;
+  height: 3.6em;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  overflow: hidden;
+  text-align: center;
+  word-wrap: break-word;
+  text-overflow: ellipsis;
+}
+
+.price-button-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 1rem;
+}
+
+.price {
+  margin-bottom: 0;
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.btn-cart {
+  padding: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #ff69b4; /* Розовый цвет */
+  color: white;
+  border: none;
+  border-radius: 0.25rem;
+  cursor: pointer;
+  text-decoration: none;
+  font-size: 0.75rem; /* Размер шрифта для текста */
+  height: 30px; /* Фиксированная высота кнопки */
+  width: 30px; /* Фиксированная ширина кнопки */
+  line-height: 30px; /* Центрирование текста по высоте */
+}
+
+.btn-cart img {
+  width: 20px;
+  height: 20px;
+  display: block; /* Отображение изображения как блока */
+}
+
+.btn-cart span {
+  display: none; /* Скрыть текст по умолчанию */
+}
+
+.btn-cart.no-img span {
+  display: block; /* Показывать текст, если изображения нет */
+}
+
+.btn-cart:hover {
+  background-color: #ff1493; /* Темно-розовый цвет при наведении */
+}
+
+/* Обертка для поиска */
+.search-group {
+  display: flex;
+  align-items: center; /* Вертикальное выравнивание элементов */
+  width: 250px; /* Ширина поиска */
+}
+
+.search-group .form-control {
+  height: 38px; /* Высота текстового поля */
+  padding: 0.5rem; /* Отступы внутри текстового поля */
+  font-size: 1rem; /* Размер шрифта */
+  border-radius: 0.375rem 0 0 0.375rem; /* Закругление только слева */
+}
+
+.search-group .btn-search {
+  height: 38px; /* Высота кнопки */
+  padding: 0 0.5rem; /* Отступы внутри кнопки */
+  padding-bottom: 0.2rem;
+  background-color: #ff69b4; /* Розовый цвет кнопки */
+  border: none;
+  border-radius: 0 0.375rem 0.375rem 0; /* Закругление только справа */
+  color: #fff;
+}
+
+.search-group .btn-search img {
+  width: 20px; /* Ширина иконки */
+  height: 20px; /* Высота иконки */
 }
