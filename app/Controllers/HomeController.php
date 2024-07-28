@@ -62,43 +62,12 @@ class HomeController extends Controller
             $toys->remove(Request::post('id'));
         }
     }
-
-    /*public function addToy()
+    public function search()
     {
-        if ($_POST) {
-            $toyModel = new Toy();
-            $data = [
-                'name_toys' => $_POST['name_toys'],
-                'price' => $_POST['price'],
-                'id_photo' => $_POST['id_photo'],
-            ];
-            $toyModel->addToy($data);
-            echo json_encode(['status' => 'success']);
-        }
+        $query = Request::get('query');
+        $toyModel = new Toy();
+        $toys = $toyModel->searchToys($query);
+        $this->view('home', ['toys' => $toys]);
     }
-
-    public function editToy()
-    {
-        if ($_POST) {
-            $toyModel = new Toy();
-            $data = [
-                'id' => $_POST['id'],
-                'name_toys' => $_POST['name_toys'],
-                'price' => $_POST['price'],
-                'id_photo' => $_POST['id_photo'],
-            ];
-            $toyModel->editToy($data);
-            echo json_encode(['status' => 'success']);
-        }
-    }
-
-    public function deleteToy()
-    {
-        if ($_POST) {
-            $toyModel = new Toy();
-            $toyModel->deleteToy($_POST['id']);
-            echo json_encode(['status' => 'success']);
-        }
-    }*/
 }
 ?>

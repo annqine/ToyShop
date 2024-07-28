@@ -19,7 +19,8 @@ class Toy extends Model
         }
     }
 
-    public function add($name, $price, $file){
+    public function add($name, $price, $file)
+    {
         try {
             $imageId = $this->uploadImage($file);
 
@@ -31,7 +32,8 @@ class Toy extends Model
         }
     }
 
-    public function edit($id, $name, $price, $file){
+    public function edit($id, $name, $price, $file)
+    {
         $q = "select * from all_toys where id = $id";
         $smtp = $this->db->prepare($q);
         $smtp->execute();
@@ -39,7 +41,7 @@ class Toy extends Model
         $imageId = $r['id_photo'];
         $imageIdOld = $imageId;
         $imageFilenameOld = $r['filename'];
-        if(!empty($file)){
+        if (!empty($file)) {
             $imageId = $this->uploadImage($file);
         }
 
@@ -47,17 +49,18 @@ class Toy extends Model
         $smtp = $this->db->prepare($q);
         $smtp->execute();
 
-        if(!empty($file)){
+        if (!empty($file)) {
             $q = "delete from images where id = $imageIdOld";
             $smtp = $this->db->prepare($q);
             $smtp->execute();
-            unlink(realpath(__DIR__ . '/../../images/'.$imageFilenameOld));
+            unlink(realpath(__DIR__ . '/../../images/' . $imageFilenameOld));
         }
 
 
     }
 
-    public function remove($id){
+    public function remove($id)
+    {
         $q = "select * from all_toys where id = $id";
         $smtp = $this->db->prepare($q);
         $smtp->execute();
@@ -74,13 +77,14 @@ class Toy extends Model
         $r = $smtp->fetchAll()[0];
         $imageFilename = $r['filename'];
 
-        unlink(__DIR__ . '/../../images/'.$imageFilename);
+        unlink(__DIR__ . '/../../images/' . $imageFilename);
         $q = "delete from images where id = $imageId;";
         $smtp = $this->db->prepare($q);
         $smtp->execute();
     }
 
-    private function uploadImage($file){
+    private function uploadImage($file)
+    {
         $uploader = new FileUploader(__DIR__ . '/../../images');
         $uploadedFileName = $uploader->upload($file);
         $q = "insert into images(`filename`) values('$uploadedFileName');";
@@ -91,6 +95,24 @@ class Toy extends Model
         $smtp = $this->db->prepare($q);
         $smtp->execute();
         return $smtp->fetchAll()[0]['id'];
+    }
+    public function searchToys($query)
+    {
+        $query = "%" . $query . "%";
+        $sql = "SELECT t.*, CONCAT('/images/', i.filename) AS photo_url 
+                FROM all_toys t
+                LEFT JOIN images i ON t.id_photo = i.id
+                WHERE t.name_toys LIKE :query";
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->bindParam(':query', $query, PDO::PARAM_STR);
+
+        if ($stmt->execute()) {
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } else {
+            error_log("SQL Error: " . print_r($stmt->errorInfo(), true));
+            return false;
+        }
     }
 }
 

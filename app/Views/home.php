@@ -18,9 +18,8 @@
     <div class="container">
         <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-5 g-3">
             <?php if (!empty($data['toys'])): ?>
-                <?php foreach ($data['toys'] as $toy):
-                    $imageUrl = !empty($toy['photo_url']) ? htmlspecialchars($toy['photo_url']) : $defaultImage;
-                    ?>
+                <?php foreach ($data['toys'] as $toy): ?>
+                    <?php $imageUrl = !empty($toy['photo_url']) ? htmlspecialchars($toy['photo_url']) : $defaultImage; ?>
                     <div class="col">
                         <div class="card shadow-sm">
                             <img class="bd-placeholder-img card-img-top" src="<?php echo $imageUrl; ?>"

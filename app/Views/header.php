@@ -25,12 +25,12 @@
         </ul>
 
         <div class="d-flex align-items-center">
-          <div class="input-group mb-3 search-group">
-            <input type="text" class="form-control" placeholder="Search" aria-label="Search">
-            <button class="btn btn-search" type="button">
+          <form class="input-group mb-3 search-group" method="get" action="/search">
+            <input type="text" name="query" class="form-control" placeholder="Search" aria-label="Search">
+            <button class="btn btn-search" type="submit">
               <img src="/images/search-icon.png" alt="Search">
             </button>
-          </div>
+          </form>
         </div>
       </div>
     </div>
