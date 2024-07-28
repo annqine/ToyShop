@@ -75,7 +75,6 @@ class Pagination extends Model
 
         $totalRecords = 0;
         $stmt = $this->db->prepare($q);
-        //$this->dd($q);
         if ($stmt->execute()) {
             $totalRecords = count($stmt->fetchAll(PDO::FETCH_ASSOC));
         } else {
@@ -101,4 +100,5 @@ class Pagination extends Model
             "data" => $data
         );
     }
+    
 }

@@ -48,7 +48,6 @@ class HomeController extends Controller
                   FROM all_toys t
                   LEFT JOIN images i ON t.id_photo = i.id";
 
-        // Добавляем условие фильтрации по категории, если оно задано
         if ($category !== null) {
             $query .= " WHERE t.category = :category";
         }

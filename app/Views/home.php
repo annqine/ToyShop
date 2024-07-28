@@ -14,8 +14,8 @@
 
 <body>
     <?php include 'header.php'; ?>
-    <?php $defaultImage = '/images/default.png'; 
-    $cartImage = '/images/cart-icon.png';?>
+    <?php $defaultImage = '/images/default.png';
+    $cartImage = '/images/cart-icon.png'; ?>
     <div class="container">
         <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-5 g-3">
             <?php if (!empty($data['toys'])): ?>
@@ -50,6 +50,32 @@
                 <p>No toys found.</p>
             <?php endif; ?>
         </div>
+        <!-- Pagination -->
+        <nav aria-label="Page navigation">
+            <ul class="pagination justify-content-center">
+                <?php if ($data['page'] > 1): ?>
+                    <li class="page-item">
+                        <a class="page-link" href="?page=<?php echo $data['page'] - 1; ?>" aria-label="Previous">
+                            <span aria-hidden="true">&laquo;</span>
+                        </a>
+                    </li>
+                <?php endif; ?>
+
+                <?php for ($i = 1; $i <= $data['total']; $i++): ?>
+                    <li class="page-item <?php echo $i == $data['page'] ? 'active' : ''; ?>">
+                        <a class="page-link" href="?page=<?php echo $i; ?>"><?php echo $i; ?></a>
+                    </li>
+                <?php endfor; ?>
+
+                <?php if ($data['page'] < $data['total']): ?>
+                    <li class="page-item">
+                        <a class="page-link" href="?page=<?php echo $data['page'] + 1; ?>" aria-label="Next">
+                            <span aria-hidden="true">&raquo;</span>
+                        </a>
+                    </li>
+                <?php endif; ?>
+            </ul>
+        </nav>
     </div>
     <?php include 'footer.php'; ?>
 </body>
