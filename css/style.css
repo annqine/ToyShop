@@ -54,9 +54,9 @@
 }
 
 .btn-cart img {
-  width: 20px;
-  height: 20px;
-  display: block; /* Отображение изображения как блока */
+  width: 35px !important;
+  height: 35px !important;
+  display: block !important;
 }
 
 .btn-cart span {
@@ -74,8 +74,7 @@
 /* Обертка для поиска */
 .search-group {
   display: flex;
-  align-items: center; /* Вертикальное выравнивание элементов */
-  width: 250px; /* Ширина поиска */
+  width: 400px; /* Ширина поиска */
 }
 
 .search-group .form-control {

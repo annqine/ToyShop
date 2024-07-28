@@ -14,26 +14,31 @@
 
 <body>
     <?php include 'header.php'; ?>
-    <?php $defaultImage = '/images/default.png'; ?>
+    <?php $defaultImage = '/images/default.png'; 
+    $cartImage = '/images/cart-icon.png';?>
     <div class="container">
         <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-5 g-3">
             <?php if (!empty($data['toys'])): ?>
                 <?php foreach ($data['toys'] as $toy): ?>
-                    <?php $imageUrl = !empty($toy['photo_url']) ? htmlspecialchars($toy['photo_url']) : $defaultImage; ?>
+                    <?php
+                    $imageUrl = !empty($toy['photo_url']) ? htmlspecialchars($toy['photo_url']) : $defaultImage;
+                    $toyName = htmlspecialchars($toy['name_toys']);
+                    $toyPrice = htmlspecialchars($toy['price']);
+                    ?>
                     <div class="col">
                         <div class="card shadow-sm">
                             <img class="bd-placeholder-img card-img-top" src="<?php echo $imageUrl; ?>"
-                                alt="<?php echo htmlspecialchars($toy['name_toys']); ?>"
+                                alt="<?php echo $toyName; ?>"
                                 onerror="this.onerror=null;this.src='<?php echo $defaultImage; ?>';">
                             <div class="card-body">
-                                <h5 class="card-title"><?php echo htmlspecialchars($toy['name_toys']); ?></h5>
+                                <h5 class="card-title"><?php echo $toyName; ?></h5>
                                 <div class="price-button-container">
-                                    <p class="price">Price: <?php echo htmlspecialchars($toy['price']); ?></p>
+                                    <p class="price">Price: <?php echo $toyPrice; ?></p>
                                     <a href="#" class="btn-cart <?php echo empty($cartImage) ? 'no-img' : ''; ?>">
                                         <?php if (!empty($cartImage)): ?>
                                             <img src="<?php echo htmlspecialchars($cartImage); ?>" alt="Cart">
                                         <?php else: ?>
-                                            <span>Cart</span> <!-- Текст, если изображение отсутствует -->
+                                            <span>Cart</span>
                                         <?php endif; ?>
                                     </a>
                                 </div>

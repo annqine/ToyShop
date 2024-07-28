@@ -68,34 +68,7 @@ class Pagination extends Model
                         $q .= " WHERE t.{$searchField} LIKE '%{$searchString}%' ";
                         break;
                 }
-
-            // switch ($searchOperation) {
-            //     case 'bw':
-            //         $q .= " WHERE {$searchField} like '{$searchString}%' ";
-            //         break;
-            //     case 'nw':
-            //         $q .= " WHERE {$searchField} not like '{$searchString}%' ";
-            //         break;
-            //     case 'ew':
-            //         $q .= " WHERE {$searchField} like '%{$searchString}'} ";
-            //         break;
-            //     case 'en':
-            //         $q .= " WHERE {$searchField} not like '%{$searchString}'} ";
-            //         break;
-            //     case 'nc':
-            //         $q .= " WHERE {$searchField} not like '%{$searchString}%'} ";
-            //         break;
-            //     default:
-            //         $q .= " WHERE {$searchField} like '%{$searchString}%'} ";
-            //         break;
-            // }
-
-
         }
-
-        // if (!empty($sidx)) {
-        //     $q .= " order by `{$sidx}` {$sord}";
-        // }
         if (!empty($sidx)) {
             $q .= " ORDER BY t.`{$sidx}` {$sord}";
         }
@@ -120,14 +93,6 @@ class Pagination extends Model
         }
 
         $data = array_values($result);
-
-        // Запит для отримання загальної кількості записів
-        /*$totalRecordsSql = "SELECT COUNT(*) AS total FROM {$table}";
-        $totalRecords = intval($this->db->queryOne($totalRecordsSql)['total']);
-        */
-
-        //$totalRecords = count($data);
-
         // Створення JSON-відповіді
         return array(
             "page" => $page,

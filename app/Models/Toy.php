@@ -3,99 +3,134 @@ require_once __DIR__ . '/../Core/Model.php';
 
 class Toy extends Model
 {
-    public function getAllToys()
+    // Получение всех игрушек с учетом категории
+    public function getAllToys($category = null)
     {
         $query = "SELECT t.*, CONCAT('/images/', i.filename) AS photo_url 
-          FROM all_toys t
-          LEFT JOIN images i ON t.id_photo = i.id";
+                  FROM all_toys t
+                  LEFT JOIN images i ON t.id_photo = i.id";
+
+        // Добавляем условие фильтрации по категории, если оно задано
+        if ($category !== null) {
+            $query .= " WHERE t.category = :category";
+        }
 
         $stmt = $this->db->prepare($query);
+
+        if ($category !== null) {
+            $stmt->bindParam(':category', $category, PDO::PARAM_INT);
+        }
+
         if ($stmt->execute()) {
-            $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
-            return $result;
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
         } else {
             error_log("SQL Error: " . print_r($stmt->errorInfo(), true)); // Логирование ошибки SQL
             return false;
         }
     }
 
-    public function add($name, $price, $file)
+    // Добавление новой игрушки
+    public function add($name, $price, $category, $file)
     {
         try {
             $imageId = $this->uploadImage($file);
 
-            $q = "insert into all_toys(name_toys, available, id_photo, price) values('$name', 1, '$imageId', '$price');";
-            $smtp = $this->db->prepare($q);
-            $smtp->execute();
+            $q = "INSERT INTO all_toys (name_toys, available, id_photo, price, category) 
+                  VALUES (:name, 1, :imageId, :price, :category)";
+            $stmt = $this->db->prepare($q);
+            $stmt->bindParam(':name', $name, PDO::PARAM_STR);
+            $stmt->bindParam(':price', $price, PDO::PARAM_STR);
+            $stmt->bindParam(':imageId', $imageId, PDO::PARAM_INT);
+            $stmt->bindParam(':category', $category, PDO::PARAM_INT);
+            $stmt->execute();
         } catch (Exception $e) {
             echo 'Ошибка: ' . $e->getMessage();
         }
     }
 
-    public function edit($id, $name, $price, $file)
+    // Редактирование существующей игрушки
+    public function edit($id, $name, $price, $category, $file = null)
     {
-        $q = "select * from all_toys where id = $id";
-        $smtp = $this->db->prepare($q);
-        $smtp->execute();
-        $r = $smtp->fetchAll()[0];
+        $q = "SELECT * FROM all_toys WHERE id = :id";
+        $stmt = $this->db->prepare($q);
+        $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+        $stmt->execute();
+        $r = $stmt->fetch(PDO::FETCH_ASSOC);
+
         $imageId = $r['id_photo'];
         $imageIdOld = $imageId;
         $imageFilenameOld = $r['filename'];
-        if (!empty($file)) {
+
+        if ($file) {
             $imageId = $this->uploadImage($file);
         }
 
-        $q = "update all_toys set name_toys = '$name', price = '$price', id_photo = $imageId where id = $id";
-        $smtp = $this->db->prepare($q);
-        $smtp->execute();
+        $q = "UPDATE all_toys SET name_toys = :name, price = :price, category = :category, id_photo = :imageId WHERE id = :id";
+        $stmt = $this->db->prepare($q);
+        $stmt->bindParam(':name', $name, PDO::PARAM_STR);
+        $stmt->bindParam(':price', $price, PDO::PARAM_STR);
+        $stmt->bindParam(':category', $category, PDO::PARAM_INT);
+        $stmt->bindParam(':imageId', $imageId, PDO::PARAM_INT);
+        $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+        $stmt->execute();
 
-        if (!empty($file)) {
-            $q = "delete from images where id = $imageIdOld";
-            $smtp = $this->db->prepare($q);
-            $smtp->execute();
+        if ($file) {
+            $q = "DELETE FROM images WHERE id = :imageIdOld";
+            $stmt = $this->db->prepare($q);
+            $stmt->bindParam(':imageIdOld', $imageIdOld, PDO::PARAM_INT);
+            $stmt->execute();
             unlink(realpath(__DIR__ . '/../../images/' . $imageFilenameOld));
         }
-
-
     }
 
+    // Удаление игрушки
     public function remove($id)
     {
-        $q = "select * from all_toys where id = $id";
-        $smtp = $this->db->prepare($q);
-        $smtp->execute();
-        $r = $smtp->fetchAll()[0];
+        $q = "SELECT * FROM all_toys WHERE id = :id";
+        $stmt = $this->db->prepare($q);
+        $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+        $stmt->execute();
+        $r = $stmt->fetch(PDO::FETCH_ASSOC);
         $imageId = $r['id_photo'];
 
-        $q = "delete from all_toys where id = $id;";
-        $smtp = $this->db->prepare($q);
-        $smtp->execute();
+        $q = "DELETE FROM all_toys WHERE id = :id";
+        $stmt = $this->db->prepare($q);
+        $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+        $stmt->execute();
 
-        $q = "select * from images where id = $imageId";
-        $smtp = $this->db->prepare($q);
-        $smtp->execute();
-        $r = $smtp->fetchAll()[0];
+        $q = "SELECT * FROM images WHERE id = :imageId";
+        $stmt = $this->db->prepare($q);
+        $stmt->bindParam(':imageId', $imageId, PDO::PARAM_INT);
+        $stmt->execute();
+        $r = $stmt->fetch(PDO::FETCH_ASSOC);
         $imageFilename = $r['filename'];
 
         unlink(__DIR__ . '/../../images/' . $imageFilename);
-        $q = "delete from images where id = $imageId;";
-        $smtp = $this->db->prepare($q);
-        $smtp->execute();
+
+        $q = "DELETE FROM images WHERE id = :imageId";
+        $stmt = $this->db->prepare($q);
+        $stmt->bindParam(':imageId', $imageId, PDO::PARAM_INT);
+        $stmt->execute();
     }
 
+    // Загрузка изображения
     private function uploadImage($file)
     {
         $uploader = new FileUploader(__DIR__ . '/../../images');
         $uploadedFileName = $uploader->upload($file);
-        $q = "insert into images(`filename`) values('$uploadedFileName');";
-        $smtp = $this->db->prepare($q);
-        $smtp->execute();
+        $q = "INSERT INTO images (`filename`) VALUES (:filename)";
+        $stmt = $this->db->prepare($q);
+        $stmt->bindParam(':filename', $uploadedFileName, PDO::PARAM_STR);
+        $stmt->execute();
 
-        $q = "select id from images where filename = '$uploadedFileName';";
-        $smtp = $this->db->prepare($q);
-        $smtp->execute();
-        return $smtp->fetchAll()[0]['id'];
+        $q = "SELECT id FROM images WHERE filename = :filename";
+        $stmt = $this->db->prepare($q);
+        $stmt->bindParam(':filename', $uploadedFileName, PDO::PARAM_STR);
+        $stmt->execute();
+        return $stmt->fetch(PDO::FETCH_ASSOC)['id'];
     }
+
+    // Поиск игрушек по запросу
     public function searchToys($query)
     {
         $query = "%" . $query . "%";
@@ -115,5 +150,4 @@ class Toy extends Model
         }
     }
 }
-
 ?>
