@@ -80,13 +80,13 @@
                     {
                         name: 'category', index: 'category', width: 100,
                         formatter: function (cellvalue) {
-                            const categories = ['Девочки', 'Мальчики', 'Малыши', 'Новорожденные'];
+                            const categories = ['Не указана', 'Девочки', 'Мальчики', 'Малыши', 'Новорожденные'];
                             return categories[cellvalue] || 'Не указана';
                         },
                         editable: true,
                         edittype: 'select',
                         editoptions: {
-                            value: "0:Девочки;1:Мальчики;2:Малыши;3:Новорожденные"
+                            value: "1:Девочки;2:Мальчики;3:Малыши;4:Новорожденные"
                         }
                     }
                 ],

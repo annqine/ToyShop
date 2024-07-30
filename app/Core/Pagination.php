@@ -17,7 +17,7 @@ class Pagination extends Model
         die();
     }
 
-    public function paginate($baseQuery, $table, $page, $rows, $sidx, $sord, $category)
+    public function paginate($baseQuery, $table, $page, $rows, $sidx, $sord, $category = null)
     {
         $SEARCH_OPERATIONS = [
             'eq' => '=',
@@ -45,7 +45,6 @@ class Pagination extends Model
 
         if (Request::get('_search')) {
             if (array_key_exists($searchOperation, $SEARCH_OPERATIONS)) {
-                //$q .= " WHERE {$searchField} {$SEARCH_OPERATIONS[$searchOperation]} '{$searchString}' ";
                 $q .= " WHERE t.{$searchField} {$SEARCH_OPERATIONS[$searchOperation]} '{$searchString}' ";
             } else
                 switch ($searchOperation) {
@@ -75,6 +74,9 @@ class Pagination extends Model
 
         $totalRecords = 0;
         $stmt = $this->db->prepare($q);
+        if ($category !== null) {
+            $stmt->bindParam(':category', $category, PDO::PARAM_INT);
+        }
         if ($stmt->execute()) {
             $totalRecords = count($stmt->fetchAll(PDO::FETCH_ASSOC));
         } else {
@@ -83,6 +85,9 @@ class Pagination extends Model
 
         $q .= " limit {$startRow}, {$endRow}";
         $stmt = $this->db->prepare($q);
+        if ($category !== null) {
+            $stmt->bindParam(':category', $category, PDO::PARAM_INT);
+        }
 
         $result = null;
         if ($stmt->execute()) {

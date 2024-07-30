@@ -10,14 +10,14 @@ class Toy extends Model
                   FROM all_toys t
                   LEFT JOIN images i ON t.id_photo = i.id";
 
-        // Добавляем условие фильтрации по категории, если оно задано
-        if ($category !== null) {
+        // Добавляем условие фильтрации по категории, если оно задано и не равно 0
+        if ($category !== null && $category != 0) {
             $query .= " WHERE t.category = :category";
         }
 
         $stmt = $this->db->prepare($query);
 
-        if ($category !== null) {
+        if ($category !== null && $category != 0) {
             $stmt->bindParam(':category', $category, PDO::PARAM_INT);
         }
 
@@ -28,6 +28,30 @@ class Toy extends Model
             return false;
         }
     }
+    // public function getAllToys($category = null)
+    // {
+    //     $query = "SELECT t.*, CONCAT('/images/', i.filename) AS photo_url 
+    //               FROM all_toys t
+    //               LEFT JOIN images i ON t.id_photo = i.id";
+
+    //     // Добавляем условие фильтрации по категории, если оно задано
+    //     if ($category !== null) {
+    //         $query .= " WHERE t.category = :category";
+    //     }
+
+    //     $stmt = $this->db->prepare($query);
+
+    //     if ($category !== null) {
+    //         $stmt->bindParam(':category', $category, PDO::PARAM_INT);
+    //     }
+
+    //     if ($stmt->execute()) {
+    //         return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    //     } else {
+    //         error_log("SQL Error: " . print_r($stmt->errorInfo(), true)); // Логирование ошибки SQL
+    //         return false;
+    //     }
+    // }
     // Загрузка изображения
     private function uploadImage($file)
     {

@@ -12,8 +12,10 @@ class HomeController extends Controller
 {
     public function index()
     {
-        $toyModel = new Toy();
-        $toys = $toyModel->getAllToys();
+        $category = isset($_GET['category']) ? (int) $_GET['category'] : 0;
+        $toys = (new Toy())->getAllToys($category);
+        //$toyModel = new Toy();
+        //$toys = $toyModel->getAllToys();
         $this->view('home', ['toys' => $toys]);
     }
 

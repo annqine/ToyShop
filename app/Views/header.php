@@ -27,11 +27,11 @@
         <form class="input-group search-group" method="get" action="/search">
           <input type="text" name="query" class="form-control" placeholder="Search" aria-label="Search">
           <select name="category" class="form-select" aria-label="Category">
-            <option value="" selected>All Categories</option>
-            <option value="0">Girls</option>
-            <option value="1">Boys</option>
-            <option value="2">Toddlers</option>
-            <option value="3">Newborns</option>
+            <option value="0" selected>All Categories</option>
+            <option value="1">Girls</option>
+            <option value="2">Boys</option>
+            <option value="3">Toddlers</option>
+            <option value="4">Newborns</option>
           </select>
           <button class="btn btn-search" type="submit">
             <img src="/images/search-icon.png" alt="Search">
