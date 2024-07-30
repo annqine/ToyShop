@@ -17,7 +17,7 @@ class Pagination extends Model
         die();
     }
 
-    public function paginate($baseQuery, $table, $page, $rows, $sidx, $sord)
+    public function paginate($baseQuery, $table, $page, $rows, $sidx, $sord, $category)
     {
         $SEARCH_OPERATIONS = [
             'eq' => '=',
@@ -100,5 +100,5 @@ class Pagination extends Model
             "data" => $data
         );
     }
-    
+
 }
