@@ -28,6 +28,22 @@ class Toy extends Model
             return false;
         }
     }
+    // Загрузка изображения
+    private function uploadImage($file)
+    {
+        $uploader = new FileUploader(__DIR__ . '/../../images');
+        $uploadedFileName = $uploader->upload($file);
+        $q = "INSERT INTO images (`filename`) VALUES (:filename)";
+        $stmt = $this->db->prepare($q);
+        $stmt->bindParam(':filename', $uploadedFileName, PDO::PARAM_STR);
+        $stmt->execute();
+
+        $q = "SELECT id FROM images WHERE filename = :filename";
+        $stmt = $this->db->prepare($q);
+        $stmt->bindParam(':filename', $uploadedFileName, PDO::PARAM_STR);
+        $stmt->execute();
+        return $stmt->fetch(PDO::FETCH_ASSOC)['id'];
+    }
 
     // Добавление новой игрушки
     public function add($name, $price, $category, $file)
@@ -111,23 +127,6 @@ class Toy extends Model
         $stmt = $this->db->prepare($q);
         $stmt->bindParam(':imageId', $imageId, PDO::PARAM_INT);
         $stmt->execute();
-    }
-
-    // Загрузка изображения
-    private function uploadImage($file)
-    {
-        $uploader = new FileUploader(__DIR__ . '/../../images');
-        $uploadedFileName = $uploader->upload($file);
-        $q = "INSERT INTO images (`filename`) VALUES (:filename)";
-        $stmt = $this->db->prepare($q);
-        $stmt->bindParam(':filename', $uploadedFileName, PDO::PARAM_STR);
-        $stmt->execute();
-
-        $q = "SELECT id FROM images WHERE filename = :filename";
-        $stmt = $this->db->prepare($q);
-        $stmt->bindParam(':filename', $uploadedFileName, PDO::PARAM_STR);
-        $stmt->execute();
-        return $stmt->fetch(PDO::FETCH_ASSOC)['id'];
     }
 
     // Поиск игрушек по запросу
