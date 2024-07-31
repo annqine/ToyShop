@@ -3,22 +3,42 @@ require_once __DIR__ . '/../Core/Model.php';
 
 class Toy extends Model
 {
-    // Получение всех игрушек с учетом категории
-    public function getAllToys($category = null)
+    public function dd($value)
     {
-        $query = "SELECT t.*, CONCAT('/images/', i.filename) AS photo_url 
-                  FROM all_toys t
-                  LEFT JOIN images i ON t.id_photo = i.id";
+        echo '<pre>';
+        print_r($value);
+        echo '</pre>';
+        die();
+    }
+    // Получение всех игрушек с учетом категории и поиска по запросу
+    public function getAllToys($category = null, $query = null)
+    {
+        $sql = "SELECT t.*, CONCAT('/images/', i.filename) AS photo_url 
+                FROM all_toys t
+                LEFT JOIN images i ON t.id_photo = i.id";
 
-        // Добавляем условие фильтрации по категории, если оно задано и не равно 0
+        // Добавление условий фильтрации по категории и запросу
+        $conditions = [];
+        $params = [];
+
         if ($category !== null && $category != 0) {
-            $query .= " WHERE t.category = :category";
+            $conditions[] = "t.category = :category";
+            $params[':category'] = $category;
         }
 
-        $stmt = $this->db->prepare($query);
+        if ($query !== null && $query !== '') {
+            $conditions[] = "t.name_toys LIKE :query";
+            $params[':query'] = '%' . $query . '%';
+        }
 
-        if ($category !== null && $category != 0) {
-            $stmt->bindParam(':category', $category, PDO::PARAM_INT);
+        if (count($conditions) > 0) {
+            $sql .= ' WHERE ' . implode(' AND ', $conditions);
+        }
+
+        $stmt = $this->db->prepare($sql);
+
+        foreach ($params as $param => $value) {
+            $stmt->bindValue($param, $value);
         }
 
         if ($stmt->execute()) {
@@ -28,30 +48,34 @@ class Toy extends Model
             return false;
         }
     }
+    // Получение всех игрушек с учетом категории
     // public function getAllToys($category = null)
     // {
     //     $query = "SELECT t.*, CONCAT('/images/', i.filename) AS photo_url 
     //               FROM all_toys t
     //               LEFT JOIN images i ON t.id_photo = i.id";
 
-    //     // Добавляем условие фильтрации по категории, если оно задано
-    //     if ($category !== null) {
+    //     // Добавляем условие фильтрации по категории, если оно задано и не равно 0
+    //     if ($category !== null && $category != 0) {
     //         $query .= " WHERE t.category = :category";
     //     }
 
     //     $stmt = $this->db->prepare($query);
 
-    //     if ($category !== null) {
+    //     if ($category !== null && $category != 0) {
     //         $stmt->bindParam(':category', $category, PDO::PARAM_INT);
     //     }
 
     //     if ($stmt->execute()) {
+    //         $this->dd($stmt);
     //         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     //     } else {
     //         error_log("SQL Error: " . print_r($stmt->errorInfo(), true)); // Логирование ошибки SQL
     //         return false;
     //     }
     // }
+
+
     // Загрузка изображения
     private function uploadImage($file)
     {
@@ -154,23 +178,23 @@ class Toy extends Model
     }
 
     // Поиск игрушек по запросу
-    public function searchToys($query)
-    {
-        $query = "%" . $query . "%";
-        $sql = "SELECT t.*, CONCAT('/images/', i.filename) AS photo_url 
-                FROM all_toys t
-                LEFT JOIN images i ON t.id_photo = i.id
-                WHERE t.name_toys LIKE :query";
+    // public function searchToys($query)
+    // {
+    //     $query = "%" . $query . "%";
+    //     $sql = "SELECT t.*, CONCAT('/images/', i.filename) AS photo_url 
+    //             FROM all_toys t
+    //             LEFT JOIN images i ON t.id_photo = i.id
+    //             WHERE t.name_toys LIKE :query";
 
-        $stmt = $this->db->prepare($sql);
-        $stmt->bindParam(':query', $query, PDO::PARAM_STR);
+    //     $stmt = $this->db->prepare($sql);
+    //     $stmt->bindParam(':query', $query, PDO::PARAM_STR);
 
-        if ($stmt->execute()) {
-            return $stmt->fetchAll(PDO::FETCH_ASSOC);
-        } else {
-            error_log("SQL Error: " . print_r($stmt->errorInfo(), true));
-            return false;
-        }
-    }
+    //     if ($stmt->execute()) {
+    //         return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    //     } else {
+    //         error_log("SQL Error: " . print_r($stmt->errorInfo(), true));
+    //         return false;
+    //     }
+    // }
 }
 ?>

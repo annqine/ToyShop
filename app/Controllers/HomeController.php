@@ -76,19 +76,29 @@ class HomeController extends Controller
             $toyModel->remove(Request::post('id'));
         }
     }
-
     public function search()
     {
         $query = Request::get('query');
-        $category = Request::get('category'); // Новый параметр для поиска по категории
+        $category = Request::get('category');
 
         $toyModel = new Toy();
-        if ($category !== null) {
-            $toys = $toyModel->getAllToys($category);
-        } else {
-            $toys = $toyModel->searchToys($query);
-        }
+        $toys = $toyModel->getAllToys($category, $query);
+
         $this->view('home', ['toys' => $toys]);
     }
+
+    // public function search()
+    // {
+    //     $query = Request::get('query');
+    //     $category = Request::get('category'); // Новый параметр для поиска по категории
+
+    //     $toyModel = new Toy();
+    //     if ($category !== null) {
+    //         $toys = $toyModel->getAllToys($category);
+    //     } else {
+    //         $toys = $toyModel->searchToys($query);
+    //     }
+    //     $this->view('home', ['toys' => $toys]);
+    // }
 }
 ?>
