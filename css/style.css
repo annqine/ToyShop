@@ -98,3 +98,13 @@
   width: 20px; /* Ширина иконки */
   height: 20px; /* Высота иконки */
 }
+.pagination .page-item a {
+  color: #000;
+}
+.pagination .page-item.active .page-link {
+  background-color: pink;
+  border-color: pink;
+}
+.pagination .page-link {
+  color: pink;
+}

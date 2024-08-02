@@ -12,12 +12,46 @@ class HomeController extends Controller
 {
     public function index()
     {
-        $category = isset($_GET['category']) ? (int) $_GET['category'] : 0;
-        $toys = (new Toy())->getAllToys($category);
-        //$toyModel = new Toy();
-        //$toys = $toyModel->getAllToys();
-        $this->view('home', ['toys' => $toys]);
+        // Получение параметров из запроса
+        $page = isset($_GET['page']) ? intval($_GET['page']) : 1;
+        $rows = isset($_GET['rows']) ? intval($_GET['rows']) : 10;
+        $sidx = isset($_GET['sidx']) ? $_GET['sidx'] : 'id';
+        $sord = isset($_GET['sord']) ? $_GET['sord'] : 'asc';
+        $category = isset($_GET['category']) ? intval($_GET['category']) : null;
+        $query = isset($_GET['query']) ? $_GET['query'] : null;
+
+        // Создание экземпляра модели
+        $query = Request::get('query');
+        $category = Request::get('category');
+
+        $model = new Toy();
+        // Получение данных и общего количества записей
+        $response = $model->getAllToys($category, $query, $page, $rows, $sidx, $sord);
+        //$this->dd($response);
+        //$this->dd($response['data']);
+        // Передача данных в представление
+        $this->view('home', [
+            'data' => $response['data'],
+            'page' => $page,
+            'total' => $response['total'],
+            'records' => count($response['data']),
+            'rows' => $rows,
+            'sidx' => $sidx,
+            'sord' => $sord,
+            'category' => $category,
+            'query' => $query
+        ]);
     }
+
+
+    // public function index()
+    // {
+    //     $category = isset($_GET['category']) ? (int) $_GET['category'] : 0;
+    //     $toys = (new Toy())->getAllToys($category);
+    //     //$toyModel = new Toy();
+    //     //$toys = $toyModel->getAllToys();
+    //     $this->view('home', ['toys' => $toys]);
+    // }
 
     public function admin()
     {
@@ -76,16 +110,16 @@ class HomeController extends Controller
             $toyModel->remove(Request::post('id'));
         }
     }
-    public function search()
-    {
-        $query = Request::get('query');
-        $category = Request::get('category');
+    // public function search()
+    // {
+    //     $query = Request::get('query');
+    //     $category = Request::get('category');
 
-        $toyModel = new Toy();
-        $toys = $toyModel->getAllToys($category, $query);
+    //     $toyModel = new Toy();
+    //     $toys = $toyModel->getAllToys($category, $query);
 
-        $this->view('home', ['toys' => $toys]);
-    }
+    //     $this->view('home', ['toys' => $toys]);
+    // }
 
     // public function search()
     // {

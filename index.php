@@ -12,7 +12,7 @@ Route::add('GET', '', 'HomeController@index'); // Главная страниц�
 Route::add('GET', 'admin', 'HomeController@admin'); // Админка
 Route::add('GET', 'toys', 'HomeController@toys'); // Админка
 Route::add('POST', 'toysEdit', 'HomeController@toysEdit'); // Админка
-Route::add('GET', 'search', 'HomeController@search'); // Главная страница
+Route::add('GET', 'search', 'HomeController@index'); // Главная страница
 
 // Запуск маршрутизатора
 Route::start();

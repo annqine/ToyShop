@@ -11,6 +11,15 @@
         crossorigin="anonymous"></script>
     <link rel="stylesheet" href="../css/style.css">
 </head>
+<? function dd($value)
+{
+    echo '<pre>';
+    print_r($value);
+    echo '</pre>';
+    die();
+}
+
+?>
 
 <body>
     <?php include 'header.php'; ?>
@@ -18,8 +27,8 @@
     $cartImage = '/images/cart-icon.png'; ?>
     <div class="container">
         <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-5 g-3">
-            <?php if (!empty($data['toys'])): ?>
-                <?php foreach ($data['toys'] as $toy): ?>
+            <?php if (!empty($data)): ?>
+                <?php foreach ($data as $toy): ?>
                     <?php
                     $imageUrl = !empty($toy['photo_url']) ? htmlspecialchars($toy['photo_url']) : $defaultImage;
                     $toyName = htmlspecialchars($toy['name_toys']);
@@ -50,6 +59,40 @@
                 <p>No toys found.</p>
             <?php endif; ?>
         </div>
+
+        <!-- Пагинация -->
+        <nav aria-label="Page navigation">
+            <ul class="pagination justify-content-center">
+
+                <!-- Кнопка "Предыдущая" -->
+                <li class="page-item <?php echo ($page == 0) ? 'disabled' : ''; ?>">
+                    <a class="page-link"
+                        href="?page=<?php echo $page - 1; ?>&rows=<?php echo $rows; ?>&sidx=<?php echo $sidx; ?>&sord=<?php echo $sord; ?>&category=<?php echo $category; ?>&query=<?php echo urlencode($query); ?>"
+                        aria-label="Previous">
+                        <span aria-hidden="true">&laquo;</span>
+                    </a>
+                </li>
+
+                <!-- Номера страниц -->
+                <?php for ($i = 1; $i <= ($total / $rows) + 1; $i++): ?>
+                    <li class="page-item <?php echo ($page == $i) ? 'active' : ''; ?>">
+                        <a class="page-link"
+                            href="?page=<?php echo $i; ?>&rows=<?php echo $rows; ?>&sidx=<?php echo $sidx; ?>&sord=<?php echo $sord; ?>&category=<?php echo $category; ?>&query=<?php echo urlencode($query); ?>">
+                            <?php echo $i; ?>
+                        </a>
+                    </li>
+                <?php endfor; ?>
+
+                <!-- Кнопка "Следующая" -->
+                <li class="page-item <?php echo ($page == $total) ? 'disabled' : ''; ?>">
+                    <a class="page-link"
+                        href="?page=<?php echo $page + 1; ?>&rows=<?php echo $rows; ?>&sidx=<?php echo $sidx; ?>&sord=<?php echo $sord; ?>&category=<?php echo $category; ?>&query=<?php echo urlencode($query); ?>"
+                        aria-label="Next">
+                        <span aria-hidden="true">&raquo;</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
     </div>
     <?php include 'footer.php'; ?>
 </body>
