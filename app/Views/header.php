@@ -19,7 +19,7 @@
         </a> -->
 
         <ul class="nav col-12 col-lg-auto me-lg-auto justify-content-center">
-          <li><a href="/admin" class="nav-link px-2 link-body-emphasis">Login</a></li>
+          <li><a href="/login" class="nav-link px-2 link-body-emphasis">Login</a></li>
           <li><a href="#" class="nav-link px-2 link-body-emphasis">Customers</a></li>
           <li><a href="#" class="nav-link px-2 link-body-emphasis">Products</a></li>
         </ul>
