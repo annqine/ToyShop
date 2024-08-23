@@ -5,6 +5,7 @@ use Core\Request;
 
 require_once __DIR__ . '/../Models/Toy.php';
 require_once __DIR__ . '/../Models/User.php';
+require_once __DIR__ . '/../Models/Cart.php';
 require_once __DIR__ . '/../Core/Controller.php';
 require_once __DIR__ . '/../Core/Pagination.php';
 require_once __DIR__ . '/../Core/FileUploader.php';
@@ -43,6 +44,68 @@ class HomeController extends Controller
             'query' => $query
         ]);
     }
+    public function addToCart()
+    {
+        if (!isset($_SESSION['user_id'])) {
+            header('Location: /login');
+            exit;
+        }
+
+        $userId = $_SESSION['user_id'];
+        $toyId = $_POST['toy_id'];
+        $quantity = $_POST['quantity'];
+
+        $cartModel = new Cart();
+        $cartModel->addToCart($userId, $toyId, $quantity);
+
+        header('Location: /cart');
+        exit;
+    }
+    public static function isLoggedIn()
+    {
+        return isset($_SESSION['user_id']);
+    }
+
+
+    public function cart()
+    {
+        if (!isset($_SESSION['user_id'])) {
+            $this->view('login', ['error' => 'Пожалуйста, авторизуйтесь для доступа к корзине']);
+            return;
+        }
+
+        $userId = $_SESSION['user_id'];
+        $cartModel = new Cart();
+        $cartItems = $cartModel->getCart($userId);
+
+        $this->view('cart', ['cartItems' => $cartItems]);
+    }
+
+    public function logout()
+    {
+        // Очистка сессии
+        session_unset();
+        session_destroy();
+
+        // Удаление корзины пользователя
+        $cartModel = new Cart();
+        if (isset($_SESSION['user_id'])) {
+            $cartModel->clearCart($_SESSION['user_id']);
+        }
+
+        header('Location: /login');
+        exit;
+    }
+    // public function logout()
+    // {
+    //     // Удаляем сессионные данные
+    //     session_unset();
+    //     session_destroy();
+
+    //     // Перенаправляем на главную страницу
+    //     header('Location: /');
+    //     exit;
+    // }
     public function login()
     {
 

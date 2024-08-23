@@ -11,20 +11,14 @@
         crossorigin="anonymous"></script>
     <link rel="stylesheet" href="../css/style.css">
 </head>
-<? function dd($value)
-{
-    echo '<pre>';
-    print_r($value);
-    echo '</pre>';
-    die();
-}
-
-?>
 
 <body>
     <?php include 'header.php'; ?>
-    <?php $defaultImage = '/images/default.png';
-    $cartImage = '/images/cart-icon.png'; ?>
+    <?php
+    require_once __DIR__ . '/../Controllers/HomeController.php';
+    $defaultImage = '/images/default.png';
+    $cartImage = '/images/cart-icon.png';
+    ?>
     <div class="container">
         <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-5 g-3">
             <?php if (!empty($data)): ?>
@@ -43,13 +37,30 @@
                                 <h5 class="card-title"><?php echo $toyName; ?></h5>
                                 <div class="price-button-container">
                                     <p class="price">Price: <?php echo $toyPrice; ?></p>
-                                    <a href="#" class="btn-cart <?php echo empty($cartImage) ? 'no-img' : ''; ?>">
-                                        <?php if (!empty($cartImage)): ?>
-                                            <img src="<?php echo htmlspecialchars($cartImage); ?>" alt="Cart">
-                                        <?php else: ?>
-                                            <span>Cart</span>
-                                        <?php endif; ?>
-                                    </a>
+
+                                    <?php if (HomeController::isLoggedIn()): ?>
+                                        <form action="/addToCart" method="POST" class="d-inline">
+                                            <input type="hidden" name="toy_id" value="<?php echo $toy['id']; ?>">
+                                            <input type="hidden" name="quantity" value="1"> <!-- или другой нужный вам quantity -->
+                                            <button type="submit" class="btn-cart">
+                                                <?php if (!empty($cartImage)): ?>
+                                                    <img src="<?php echo htmlspecialchars($cartImage); ?>" alt="Cart">
+                                                <?php else: ?>
+                                                    <span>Cart</span>
+                                                <?php endif; ?>
+                                            </button>
+                                        </form>
+                                    <?php else: ?>
+                                        <a href="/login" class="btn-cart"
+                                            onclick="alert('Вы еще не вошли. Пожалуйста, войдите или зарегистрируйтесь.');">
+                                            <?php if (!empty($cartImage)): ?>
+                                                <img src="<?php echo htmlspecialchars($cartImage); ?>" alt="Cart">
+                                            <?php else: ?>
+                                                <span>Cart</span>
+                                            <?php endif; ?>
+                                        </a>
+                                    <?php endif; ?>
+
                                 </div>
                             </div>
                         </div>
@@ -63,7 +74,6 @@
         <!-- Пагинация -->
         <nav aria-label="Page navigation">
             <ul class="pagination justify-content-center">
-
                 <!-- Кнопка "Предыдущая" -->
                 <li class="page-item <?php echo ($page == 0) ? 'disabled' : ''; ?>">
                     <a class="page-link"

@@ -17,5 +17,10 @@ Route::add('GET', 'login', 'HomeController@login');
 Route::add('POST', 'login', 'HomeController@login');
 Route::add('GET', 'register', 'HomeController@register');
 Route::add('POST', 'register', 'HomeController@register');
+Route::add('GET', 'logout', 'HomeController@logout');
+Route::add('POST', 'addToCart', 'HomeController@addToCart');
+Route::add('GET', 'cart', 'HomeController@cart');
+
+
 // Запуск маршрутизатора
 Route::start();

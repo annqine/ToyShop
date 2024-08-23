@@ -1,38 +1,35 @@
 <?php
+require_once __DIR__ . '/../Core/Model.php';
 
-class CartModel {
-    // Метод для добавления товара в корзину
-    public static function addToCart($toyId, $quantity = 1) {
-
-        if (!isset($_SESSION['cart'])) {
-            $_SESSION['cart'] = array();
-        }
-
-        // Если товар уже есть в корзине, увеличиваем его количество
-        if (array_key_exists($toyId, $_SESSION['cart'])) {
-            $_SESSION['cart'][$toyId] += $quantity;
-        } else {
-            $_SESSION['cart'][$toyId] = $quantity;
-        }
+class Cart extends Model
+{
+    public function addToCart($userId, $toyId, $quantity)
+    {
+        $sql = "INSERT INTO cart (user_id, toy_id, quantity) VALUES (:user_id, :toy_id, :quantity)
+                ON DUPLICATE KEY UPDATE quantity = quantity + VALUES(quantity)";
+        $stmt = $this->db->prepare($sql);
+        $stmt->bindValue(':user_id', $userId);
+        $stmt->bindValue(':toy_id', $toyId);
+        $stmt->bindValue(':quantity', $quantity);
+        return $stmt->execute();
     }
 
-    // Метод для удаления товара из корзины
-    public static function removeFromCart($toyId) {
-
-        if (isset($_SESSION['cart'][$toyId])) {
-            unset($_SESSION['cart'][$toyId]);
-        }
+    public function getCart($userId)
+    {
+        $sql = "SELECT c.*, t.name_toys, t.price FROM cart c
+                JOIN all_toys t ON c.toy_id = t.id
+                WHERE c.user_id = :user_id";
+        $stmt = $this->db->prepare($sql);
+        $stmt->bindValue(':user_id', $userId);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    // Метод для очистки корзины
-    public static function clearCart() {
-
-        $_SESSION['cart'] = array();
-    }
-
-    // Метод для получения содержимого корзины
-    public static function getCartContents() {
-
-        return isset($_SESSION['cart']) ? $_SESSION['cart'] : array();
+    public function clearCart($userId)
+    {
+        $sql = "DELETE FROM cart WHERE user_id = :user_id";
+        $stmt = $this->db->prepare($sql);
+        $stmt->bindValue(':user_id', $userId);
+        return $stmt->execute();
     }
 }
