@@ -15,19 +15,19 @@
                 <div class="form-group mb-3">
                     <label for="username">Username:</label>
                     <input type="text" name="username" id="username" class="form-control" required
-                        style="border-color: pink;">
+                        style="border-color: hotpink;">
                 </div>
                 <div class="form-group mb-3">
                     <label for="password">Password:</label>
                     <input type="password" name="password" id="password" class="form-control" required
-                        style="border-color: pink;">
+                        style="border-color: hotpink;">
                 </div>
                 <?php if (isset($error)): ?>
-                    <div class="alert alert-danger" style="background-color: pink; color: white;"><?= $error ?></div>
+                    <div class="alert alert-danger" style="background-color: hotpink; color: white;"><?= $error ?></div>
                 <?php endif; ?>
                 <button type="submit" class="btn btn-primary w-100"
-                    style="background-color: pink; border-color: pink;">Register</button>
-                <p class="text-center mt-3">Already have an account? <a href="/login" style="color: pink;">Login
+                    style="background-color: hotpink; border-color: hotpink;">Register</button>
+                <p class="text-center mt-3">Already have an account? <a href="/login" style="color: hotpink;">Login
                         here</a>.</p>
             </form>
         </div>

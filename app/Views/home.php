@@ -72,10 +72,10 @@
         </div>
 
         <!-- Пагинация -->
-        <nav aria-label="Page navigation">
+        <nav class="m-4" aria-label="Page navigation">
             <ul class="pagination justify-content-center">
                 <!-- Кнопка "Предыдущая" -->
-                <li class="page-item <?php echo ($page == 0) ? 'disabled' : ''; ?>">
+                <li class="page-item <?php echo ($page == 1) ? 'disabled' : ''; ?>">
                     <a class="page-link"
                         href="?page=<?php echo $page - 1; ?>&rows=<?php echo $rows; ?>&sidx=<?php echo $sidx; ?>&sord=<?php echo $sord; ?>&category=<?php echo $category; ?>&query=<?php echo urlencode($query); ?>"
                         aria-label="Previous">
@@ -83,8 +83,24 @@
                     </a>
                 </li>
 
-                <!-- Номера страниц -->
-                <?php for ($i = 1; $i <= ($total / $rows) + 1; $i++): ?>
+                <?php
+                $totalPages = ceil($total / $rows);
+                $startPage = max(1, $page - 2);
+                $endPage = min($totalPages, $page + 2);
+
+                if ($startPage > 1): ?>
+                    <li class="page-item">
+                        <a class="page-link"
+                            href="?page=1&rows=<?php echo $rows; ?>&sidx=<?php echo $sidx; ?>&sord=<?php echo $sord; ?>&category=<?php echo $category; ?>&query=<?php echo urlencode($query); ?>">1</a>
+                    </li>
+                    <?php if ($startPage > 2): ?>
+                        <li class="page-item disabled">
+                            <span class="page-link">...</span>
+                        </li>
+                    <?php endif; ?>
+                <?php endif; ?>
+
+                <?php for ($i = $startPage; $i <= $endPage; $i++): ?>
                     <li class="page-item <?php echo ($page == $i) ? 'active' : ''; ?>">
                         <a class="page-link"
                             href="?page=<?php echo $i; ?>&rows=<?php echo $rows; ?>&sidx=<?php echo $sidx; ?>&sord=<?php echo $sord; ?>&category=<?php echo $category; ?>&query=<?php echo urlencode($query); ?>">
@@ -93,8 +109,22 @@
                     </li>
                 <?php endfor; ?>
 
+                <?php if ($endPage < $totalPages): ?>
+                    <?php if ($endPage < $totalPages - 1): ?>
+                        <li class="page-item disabled">
+                            <span class="page-link">...</span>
+                        </li>
+                    <?php endif; ?>
+                    <li class="page-item">
+                        <a class="page-link"
+                            href="?page=<?php echo $totalPages; ?>&rows=<?php echo $rows; ?>&sidx=<?php echo $sidx; ?>&sord=<?php echo $sord; ?>&category=<?php echo $category; ?>&query=<?php echo urlencode($query); ?>">
+                            <?php echo $totalPages; ?>
+                        </a>
+                    </li>
+                <?php endif; ?>
+
                 <!-- Кнопка "Следующая" -->
-                <li class="page-item <?php echo ($page == $total) ? 'disabled' : ''; ?>">
+                <li class="page-item <?php echo ($page == $totalPages) ? 'disabled' : ''; ?>">
                     <a class="page-link"
                         href="?page=<?php echo $page + 1; ?>&rows=<?php echo $rows; ?>&sidx=<?php echo $sidx; ?>&sord=<?php echo $sord; ?>&category=<?php echo $category; ?>&query=<?php echo urlencode($query); ?>"
                         aria-label="Next">
@@ -103,6 +133,7 @@
                 </li>
             </ul>
         </nav>
+
     </div>
     <?php include 'footer.php'; ?>
 </body>

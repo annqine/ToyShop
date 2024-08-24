@@ -14,7 +14,6 @@ class HomeController extends Controller
 {
     public function index()
     {
-        // Получение параметров из запроса
         $page = isset($_GET['page']) ? intval($_GET['page']) : 1;
         $rows = isset($_GET['rows']) ? intval($_GET['rows']) : 10;
         $sidx = isset($_GET['sidx']) ? $_GET['sidx'] : 'id';
@@ -22,16 +21,11 @@ class HomeController extends Controller
         $category = isset($_GET['category']) ? intval($_GET['category']) : null;
         $query = isset($_GET['query']) ? $_GET['query'] : null;
 
-        // Создание экземпляра модели
         $query = Request::get('query');
         $category = Request::get('category');
 
         $model = new Toy();
-        // Получение данных и общего количества записей
         $response = $model->getAllToys($category, $query, $page, $rows, $sidx, $sord);
-        //$this->dd($response);
-        //$this->dd($response['data']);
-        // Передача данных в представление
         $this->view('home', [
             'data' => $response['data'],
             'page' => $page,
@@ -83,11 +77,9 @@ class HomeController extends Controller
 
     public function logout()
     {
-        // Очистка сессии
         session_unset();
         session_destroy();
 
-        // Удаление корзины пользователя
         $cartModel = new Cart();
         if (isset($_SESSION['user_id'])) {
             $cartModel->clearCart($_SESSION['user_id']);
@@ -96,16 +88,6 @@ class HomeController extends Controller
         header('Location: /login');
         exit;
     }
-    // public function logout()
-    // {
-    //     // Удаляем сессионные данные
-    //     session_unset();
-    //     session_destroy();
-
-    //     // Перенаправляем на главную страницу
-    //     header('Location: /');
-    //     exit;
-    // }
     public function login()
     {
 
@@ -177,7 +159,6 @@ class HomeController extends Controller
         $toyModel = new Toy();
         $pagination = new Pagination();
 
-        // Получаем параметры запроса для пагинации
         $page = $_GET['page'] ?? 1;
         $rows = $_GET['rows'] ?? 10;
         $sidx = $_GET['sidx'] ?? 'id';
@@ -214,29 +195,5 @@ class HomeController extends Controller
             $toyModel->remove(Request::post('id'));
         }
     }
-    // public function search()
-    // {
-    //     $query = Request::get('query');
-    //     $category = Request::get('category');
-
-    //     $toyModel = new Toy();
-    //     $toys = $toyModel->getAllToys($category, $query);
-
-    //     $this->view('home', ['toys' => $toys]);
-    // }
-
-    // public function search()
-    // {
-    //     $query = Request::get('query');
-    //     $category = Request::get('category'); // Новый параметр для поиска по категории
-
-    //     $toyModel = new Toy();
-    //     if ($category !== null) {
-    //         $toys = $toyModel->getAllToys($category);
-    //     } else {
-    //         $toys = $toyModel->searchToys($query);
-    //     }
-    //     $this->view('home', ['toys' => $toys]);
-    // }
 }
 ?>

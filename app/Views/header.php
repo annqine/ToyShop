@@ -22,8 +22,7 @@
             <!-- Если пользователь не вошел -->
             <li><a href="/login" class="nav-link px-2 link-body-emphasis">Login</a></li>
           <?php endif; ?>
-          <li><a href="#" class="nav-link px-2 link-body-emphasis">Customers</a></li>
-          <li><a href="#" class="nav-link px-2 link-body-emphasis">Products</a></li>
+          <li><a href="/cart" class="nav-link px-2 link-body-emphasis">Cart</a></li>
         </ul>
 
         <form class="input-group search-group" method="get" action="/search">
