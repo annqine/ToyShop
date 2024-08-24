@@ -9,13 +9,6 @@ use PDO;
 require_once __DIR__ . '/../Core/Request.php';
 class Pagination extends Model
 {
-    public function dd($value)
-    {
-        echo '<pre>';
-        print_r($value);
-        echo '</pre>';
-        die();
-    }
 
     public function paginate($baseQuery, $table, $page, $rows, $sidx, $sord, $category = null)
     {

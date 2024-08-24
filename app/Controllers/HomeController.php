@@ -146,17 +146,8 @@ class HomeController extends Controller
         $this->view('admin', ['toys' => $toys]);
     }
 
-    public function dd($value)
-    {
-        echo '<pre>';
-        print_r($value);
-        echo '</pre>';
-        die();
-    }
-
     public function toys()
     {
-        $toyModel = new Toy();
         $pagination = new Pagination();
 
         $page = $_GET['page'] ?? 1;

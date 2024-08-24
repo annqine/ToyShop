@@ -3,13 +3,19 @@ require_once __DIR__ . '/../Core/Model.php';
 
 class Toy extends Model
 {
-    public function dd($value)
+    public function reorderToyIds()
     {
-        echo '<pre>';
-        print_r($value);
-        echo '</pre>';
-        die();
+        $sql = "SET @new_id = 0; 
+            UPDATE all_toys SET id = (@new_id := @new_id + 1) ORDER BY id";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute();
+
+        // Сброс автоинкремента на максимальный ID + 1
+        $sqlReset = "ALTER TABLE all_toys AUTO_INCREMENT = 1";
+        $stmtReset = $this->db->prepare($sqlReset);
+        $stmtReset->execute();
     }
+
     public function getAllToys($category = null, $query = null, $page = 1, $rows = 10, $sidx = 'id', $sord = 'asc')
     {
         $offset = ($page - 1) * $rows;
@@ -74,81 +80,11 @@ class Toy extends Model
             error_log("SQL Error: " . print_r($stmt->errorInfo(), true));
             $data = [];
         }
-        //$this->dd($data);
-        //$this->dd($totalRecords);
-        // Возвращение данных и общего количества записей
         return [
             'data' => $data,
             'total' => $totalRecords
         ];
     }
-
-    // // Получение всех игрушек с учетом категории и поиска по запросу
-    // public function getAllToys($category = null, $query = null)
-    // {
-    //     $sql = "SELECT t.*, CONCAT('/images/', i.filename) AS photo_url 
-    //             FROM all_toys t
-    //             LEFT JOIN images i ON t.id_photo = i.id";
-
-    //     // Добавление условий фильтрации по категории и запросу
-    //     $conditions = [];
-    //     $params = [];
-
-    //     if ($category !== null && $category != 0) {
-    //         $conditions[] = "t.category = :category";
-    //         $params[':category'] = $category;
-    //     }
-
-    //     if ($query !== null && $query !== '') {
-    //         $conditions[] = "t.name_toys LIKE :query";
-    //         $params[':query'] = '%' . $query . '%';
-    //     }
-
-    //     if (count($conditions) > 0) {
-    //         $sql .= ' WHERE ' . implode(' AND ', $conditions);
-    //     }
-
-    //     $stmt = $this->db->prepare($sql);
-
-    //     foreach ($params as $param => $value) {
-    //         $stmt->bindValue($param, $value);
-    //     }
-
-    //     if ($stmt->execute()) {
-    //         $this->dd($stmt);
-    //         return $stmt->fetchAll(PDO::FETCH_ASSOC);
-    //     } else {
-    //         error_log("SQL Error: " . print_r($stmt->errorInfo(), true)); // Логирование ошибки SQL
-    //         return false;
-    //     }
-    // }
-    // Получение всех игрушек с учетом категории
-    // public function getAllToys($category = null)
-    // {
-    //     $query = "SELECT t.*, CONCAT('/images/', i.filename) AS photo_url 
-    //               FROM all_toys t
-    //               LEFT JOIN images i ON t.id_photo = i.id";
-
-    //     // Добавляем условие фильтрации по категории, если оно задано и не равно 0
-    //     if ($category !== null && $category != 0) {
-    //         $query .= " WHERE t.category = :category";
-    //     }
-
-    //     $stmt = $this->db->prepare($query);
-
-    //     if ($category !== null && $category != 0) {
-    //         $stmt->bindParam(':category', $category, PDO::PARAM_INT);
-    //     }
-
-    //     if ($stmt->execute()) {
-    //         $this->dd($stmt);
-    //         return $stmt->fetchAll(PDO::FETCH_ASSOC);
-    //     } else {
-    //         error_log("SQL Error: " . print_r($stmt->errorInfo(), true)); // Логирование ошибки SQL
-    //         return false;
-    //     }
-    // }
-
 
     // Загрузка изображения
     private function uploadImage($file)
@@ -181,6 +117,7 @@ class Toy extends Model
             $stmt->bindParam(':imageId', $imageId, PDO::PARAM_INT);
             $stmt->bindParam(':category', $category, PDO::PARAM_INT);
             $stmt->execute();
+            $this->reorderToyIds();
         } catch (Exception $e) {
             echo 'Ошибка: ' . $e->getMessage();
         }
@@ -249,26 +186,7 @@ class Toy extends Model
         $stmt = $this->db->prepare($q);
         $stmt->bindParam(':imageId', $imageId, PDO::PARAM_INT);
         $stmt->execute();
+        $this->reorderToyIds();
     }
-
-    // Поиск игрушек по запросу
-    // public function searchToys($query)
-    // {
-    //     $query = "%" . $query . "%";
-    //     $sql = "SELECT t.*, CONCAT('/images/', i.filename) AS photo_url 
-    //             FROM all_toys t
-    //             LEFT JOIN images i ON t.id_photo = i.id
-    //             WHERE t.name_toys LIKE :query";
-
-    //     $stmt = $this->db->prepare($sql);
-    //     $stmt->bindParam(':query', $query, PDO::PARAM_STR);
-
-    //     if ($stmt->execute()) {
-    //         return $stmt->fetchAll(PDO::FETCH_ASSOC);
-    //     } else {
-    //         error_log("SQL Error: " . print_r($stmt->errorInfo(), true));
-    //         return false;
-    //     }
-    // }
 }
 ?>
