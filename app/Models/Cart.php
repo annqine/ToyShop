@@ -24,7 +24,14 @@ class Cart extends Model
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
-
+    public function removeFromCart($userId, $toyId)
+    {
+        $sql = "DELETE FROM cart WHERE user_id = :user_id AND toy_id = :toy_id";
+        $stmt = $this->db->prepare($sql);
+        $stmt->bindValue(':user_id', $userId);
+        $stmt->bindValue(':toy_id', $toyId);
+        return $stmt->execute();
+    }
     public function clearCart($userId)
     {
         $sql = "DELETE FROM cart WHERE user_id = :user_id";

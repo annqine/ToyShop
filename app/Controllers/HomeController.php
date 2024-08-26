@@ -74,6 +74,23 @@ class HomeController extends Controller
 
         $this->view('cart', ['cartItems' => $cartItems]);
     }
+    public function removeFromCart()
+    {
+        if (!isset($_SESSION['user_id'])) {
+            header('Location: /login');
+            exit;
+        }
+
+        $userId = $_SESSION['user_id'];
+        $toyId = $_POST['remove'];
+
+        $cartModel = new Cart();
+        $cartModel->removeFromCart($userId, $toyId);
+
+        header('Location: /cart');
+        exit;
+    }
+
 
     public function logout()
     {

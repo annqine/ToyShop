@@ -23,9 +23,15 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jqgrid/5.8.8/js/i18n/grid.locale-ru.min.js"
         integrity="sha512-jQT+Yi1ouqHnLk+dwT3ytOlneHR2Vjt7FtOBiEhdw287z3ASC650pFY5+6NDujtdB9+129H14nmsF2x13hNJew=="
         crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
 </head>
 
 <body style="height: 90vh;">
+    <h2>
+        <a href="/"
+            class="link-danger link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover">Выйти</a>
+    </h2>
     <h1>Управление игрушками</h1>
 
     <div style="height: 500px;">

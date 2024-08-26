@@ -20,6 +20,7 @@ Route::add('POST', 'register', 'HomeController@register');
 Route::add('GET', 'logout', 'HomeController@logout');
 Route::add('POST', 'addToCart', 'HomeController@addToCart');
 Route::add('GET', 'cart', 'HomeController@cart');
+Route::add('POST', 'cart/remove', 'HomeController@removeFromCart');
 
 
 // Запуск маршрутизатора
