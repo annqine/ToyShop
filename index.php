@@ -6,6 +6,7 @@
 require_once 'app/Core/Route.php';
 
 session_start();
+Route::clear();
 
 // Добавляем маршруты
 Route::add('GET', '', 'HomeController@index'); // Главная страница
