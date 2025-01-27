@@ -16,6 +16,7 @@
     <?php include 'header.php'; ?>
     <?php
     require_once __DIR__ . '/../Controllers/HomeController.php';
+    require_once __DIR__ . '/../Controllers/UserController.php';
     $defaultImage = '/images/default.png';
     $cartImage = '/images/cart-icon.png';
     ?>
@@ -38,7 +39,7 @@
                                 <div class="price-button-container">
                                     <p class="price">Price: <?php echo $toyPrice; ?></p>
 
-                                    <?php if (HomeController::isLoggedIn()): ?>
+                                    <?php if (UserController::isLoggedIn()): ?>
                                         <form action="/addToCart" method="POST" class="d-inline">
                                             <input type="hidden" name="toy_id" value="<?php echo $toy['id']; ?>">
                                             <input type="hidden" name="quantity" value="1"> <!-- или другой нужный вам quantity -->
