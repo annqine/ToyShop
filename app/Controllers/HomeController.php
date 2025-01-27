@@ -5,7 +5,6 @@ require_once __DIR__ . '/../Models/Toy.php';
 require_once __DIR__ . '/../Core/Controller.php';
 require_once __DIR__ . '/../Core/Pagination.php';
 //require_once __DIR__ . '/../Core/FileUploader.php';
-
 class HomeController extends Controller
 {
     public function index()

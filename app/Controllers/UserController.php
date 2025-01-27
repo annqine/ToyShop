@@ -3,7 +3,6 @@ require_once __DIR__ . '/../Core/Controller.php';
 require_once __DIR__ . '/../Models/User.php';
 require_once __DIR__ . '/../Models/Cart.php';
 class UserController extends Controller{
- 
     public static function isLoggedIn()
     {
         return isset($_SESSION['user_id']);
@@ -71,7 +70,5 @@ class UserController extends Controller{
             $this->view('register');
         }
     }
-
-
 }
 ?>
