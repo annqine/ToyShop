@@ -12,7 +12,7 @@
     <link rel="stylesheet" href="../css/style.css">
 </head>
 
-<body>
+<body class="body">
     <?php include 'header.php'; ?>
     <?php
     require_once __DIR__ . '/../Controllers/HomeController.php';
